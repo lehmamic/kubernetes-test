@@ -1,0 +1,86 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: teamcity-server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        editor: vscode
+        app: teamcity-server
+    spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: azure-managed-disk
+      containers:
+      - name: teamcity-server
+        image: jetbrains/teamcity-server:latest
+        volumeMounts:
+        - mountPath: "/data/teamcity_server/datadir"
+          name: data
+        ports:
+        - name:  teamcity-server
+          containerPort:  8111
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name:  teamcity-server
+spec:
+  selector:
+    app: teamcity-server
+  type: ClusterIP
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8111
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: teamcity-agent
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        editor: vscode
+        app: teamcity-agent
+    spec:
+      containers:
+      - name: teamcity-agent
+        image: jetbrains/teamcity-agent:latest
+        env:
+        - name: SERVER_URL
+          value: "http://teamcity-server:8111"
+        ports:
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: azure-managed-disk
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: teamcity-dns
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: teamcity.c28bfbc3d7724623a46f.westeurope.aksapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: teamcity-server
+          servicePort: 80
+        path: /
