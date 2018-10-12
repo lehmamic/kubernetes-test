@@ -13,13 +13,18 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: azure-managed-disk
+          claimName: teamcity-server-data
+      - name: log
+        persistentVolumeClaim:
+          claimName: teamcity-server-logs
       containers:
       - name: teamcity-server
         image: jetbrains/teamcity-server:latest
         volumeMounts:
         - mountPath: "/data/teamcity_server/datadir"
           name: data
+        - mountPath: "/opt/teamcity/logs"
+          name: log
         ports:
         - name:  teamcity-server
           containerPort:  8111
@@ -49,18 +54,49 @@ spec:
         editor: vscode
         app: teamcity-agent
     spec:
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: teamcity-agent
       containers:
       - name: teamcity-agent
         image: jetbrains/teamcity-agent:latest
+        volumeMounts:
+        - mountPath: "/var/run/docker.sock"
+          name: volume
         env:
         - name: SERVER_URL
-          value: "http://teamcity-server:8111"
+          value: "http://teamcity-server:80"
         ports:
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: azure-managed-disk
+  name: teamcity-server-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: teamcity-server-logs
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: teamcity-agent
 spec:
   accessModes:
   - ReadWriteOnce
