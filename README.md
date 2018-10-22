@@ -91,3 +91,13 @@ kubectl apply -n logging -f kibana.yml
 ```
 
 *** Open question: how to use the kubernetes secrets in combination with the config maps. ***
+
+### Curator
+
+The EFK stack on kubernetes fills up the storage very quickly. To Clean the elastic search indexes a curator cron job can be added to the cluster.
+
+```yaml
+kubectl apply -n logging -f curator.yml
+```
+
+*** Open question: how to use the kubernetes secrets in combination with the config maps. ***
