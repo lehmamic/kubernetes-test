@@ -29,7 +29,6 @@ spec:
         - name: kibana-configmap
           mountPath: /usr/share/kibana/config/kibana.yml
           subPath: kibana.yml
-        resources: {}
         terminationMessagePath: "/dev/termination-log"
         terminationMessagePolicy: File
         imagePullPolicy: Always
