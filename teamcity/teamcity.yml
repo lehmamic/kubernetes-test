@@ -45,9 +45,9 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: teamcity-agent-warrior-01
+  name: teamcity-agent
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -69,38 +69,6 @@ spec:
         env:
         - name: SERVER_URL
           value: "http://teamcity-server:80"
-        - name: AGENT_NAME
-          value: Warrior-01
----
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: teamcity-agent-warrior-02
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        editor: vscode
-        app: teamcity-agent
-    spec:
-      securityContext:
-        fsGroup: 412 # Group ID of docker group on k8s nodes.
-      volumes:
-      - name: dockersock
-        hostPath:
-          path: /var/run/docker.sock
-      containers:
-      - name: teamcity-agent
-        image: jetbrains/teamcity-agent:latest
-        volumeMounts:
-        - mountPath: "/var/run/docker.sock"
-          name: dockersock
-        env:
-        - name: SERVER_URL
-          value: "http://teamcity-server:80"
-        - name: AGENT_NAME
-          value: Warrior-02
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -134,7 +102,7 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: teamcity.c28bfbc3d7724623a46f.westeurope.aksapp.io
+  - host: teamcity.c90b5ad23c6d4683a634.westeurope.aksapp.io
     http:
       paths:
       - backend:

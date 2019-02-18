@@ -1,8 +1,6 @@
-# Kubernetes tests
+# How To Setup EFK Stack to AKS
 
-## How To Setup EFK Stack to AKS
-
-### Elasticsearch
+## Elasticsearch
 
 Follow the tutorial on this site to install fluentd on the cluster:[https://blogs.msdn.microsoft.com/atverma/2018/09/24/azure-kubernetes-service-aks-deploying-elasticsearch-logstash-and-kibana-elk-and-consume-messages-from-azure-event-hub/](https://blogs.msdn.microsoft-com/atverma/2018/09/24/azure-kubernetes-service-aks-deploying-elasticsearch-logstash-and-kibana-elk-and-consume-messages-from-azure-event-hub/)
 
@@ -50,7 +48,7 @@ bin/elasticsearch-setup-passwords interactive
 
 *** Open question: how to use the kubernetes secrets in combination with the config maps. ***
 
-### Fluentd
+## Fluentd
 
 Follow the tutorial on this site to install fluentd on the cluster:
 [https://blog.ptrk.io/how-to-deploy-an-efk-stack-to-kubernetes/](https://blog.ptrk.io/how-to-deploy-an-efk-stack-to-kubernetes/)
@@ -82,7 +80,7 @@ env:
                 key: elastic-password
 ```
 
-### Kibana
+## Kibana
 
 Execute flowing command:
 
@@ -92,7 +90,7 @@ kubectl apply -n logging -f kibana.yml
 
 *** Open question: how to use the kubernetes secrets in combination with the config maps. ***
 
-### Curator
+## Curator
 
 The EFK stack on kubernetes fills up the storage very quickly. To Clean the elastic search indexes a curator cron job can be added to the cluster.
 
@@ -101,8 +99,3 @@ kubectl apply -n logging -f curator.yml
 ```
 
 *** Open question: how to use the kubernetes secrets in combination with the config maps. ***
-
-
-
-
-https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes
