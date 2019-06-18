@@ -1,0 +1,25 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: jetbrains-teamcity-agent
+  labels:
+    editor: vscode
+    app: teamcity-agent
+spec:
+  securityContext:
+    fsGroup: 412 # Group ID of docker group on k8s nodes.
+  volumes:
+    - name: dockersock
+      hostPath:
+        path: /var/run/docker.sock
+  containers:
+    - name: "jetbrains-teamcity-agent"
+      image: "jetbrains/teamcity-agent"
+      imagePullPolicy: "IfNotPresent"
+      volumeMounts:
+        - mountPath: "/var/run/docker.sock"
+          name: dockersock
+      env:
+        - name: "TEAMCITY_KUBERNETES_SERVER_URL"
+          value: "http://teamcity-server:80"
+
