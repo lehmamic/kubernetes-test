@@ -1,0 +1,16 @@
+env:
+  open:
+    STORAGE: microsoft
+    STORAGE_MICROSOFT_CONTAINER: mycontainer
+    # prefix to store charts for microsoft storage backend
+    STORAGE_MICROSOFT_PREFIX:
+  secret:
+    AZURE_STORAGE_ACCOUNT: "********" ## azure storage account
+    AZURE_STORAGE_ACCESS_KEY: "********" ## azure storage account access key
+    BASIC_AUTH_USER: curator
+    BASIC_AUTH_PASS: mypassword
+ingress:
+  enabled: true
+  hosts:
+    - name: chartmuseum.c90b5ad23c6d4683a634.westeurope.aksapp.io
+      path: /
